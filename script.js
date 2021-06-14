@@ -32,6 +32,7 @@ const { produtos } = db
 produtos.sort(function(a,b){return a.preco - b.preco});
 
 const produtosCategoria = pegarEntrada.question('Voce deseja encontrar os produtos por categoria?(S/N)');
+
 if (produtosCategoria.toLocaleUpperCase()=="S"){
     console.log('Essas sao as categorias disponiveis:') 
     console.log('alimento', 'informática', 'casa', 'higiene','bebida',)
@@ -41,19 +42,55 @@ if (produtosCategoria.toLocaleUpperCase()=="S"){
 }else{
     console.log('Esses são todos os produtos: ')
     console.table(produtos)
+    console.log('------------------------------------------')
 }
 //pega produtos pelo id
-const qualId = pegarEntrada.question('Qual o id do produto que vc deseja?(S/N)');
-if (qualId <= 8){
-    const idProduto = produtos.filter(produtos => produtos.id === qualId)
-    console.table(idProduto)
-}else{
-    console.log("id não localizado")
-}
-//quantidade de produtos
-const quantidade = pegarEntrada.question('quantos voce quer?'); //quero 3 x id
-//tem cupom de desconto
-//adicionar no carrinho 
-//Calcular o valor do subtotal (sem considerar o desconto)
-//Calcular o valor de desconto
-//Calcular o valor total (considerando o desconto do cupom)
+
+const qualId = pegarEntrada.question('Qual o id do produto que vc deseja?');
+    if(qualId <= produtos.length){
+        //adiciona no carrinho
+        const produtosPorId = produtos.find(produtos => produtos.id === parseInt(qualId));
+        console.log('Produto Encontrado: ', produtosPorId.nome);
+        const quantosId = pegarEntrada.question('Quantos voce deseja adicionar no seu carrinho de compras?')
+        const quantosProdutosId = parseInt(quantosId);
+        //carrinho de compras
+        const carrinho = [];
+            for (let i = 0; i < quantosProdutosId; i++){
+                carrinho.push(produtosPorId);
+            }
+        console.log('---------------------------------------------')
+        console.log('Esse é o seu carrinho de compras: ')
+        console.table(carrinho);
+        console.log('---------------------------------------------')
+        //Perguntar se a cliente possue cupom de desconto
+        const cupom = pegarEntrada.question('Tem cupom de desconto?(S/N)');
+        if(cupom.toLocaleUpperCase() === 'S'){
+            const qualCupom = pegarEntrada.question('Seu cupom e de quantos porcentos?Digite apenas o numero:');
+            const qualCupomInteiro = parseInt(qualCupom);
+            if(qualCupomInteiro <= 10){
+            console.log('---------------------------------------------')
+            console.log('seu cupom é de',qualCupomInteiro,'%');
+            // Valor total do carrinho
+            total = carrinho.reduce((prox, atual) => prox + atual.preco, 0)
+            console.log('---------------------------------------------')
+            console.log('Valor total do carrinho de compras:',total,'Reais')
+            console.log('---------------------------------------------')
+            const totalDeconsto = total -qualCupomInteiro/100 * total ;
+            console.log('Com desconto de', qualCupomInteiro,'% seu valor total deu: ', totalDeconsto);
+            console.log('---------------------------------------------')
+            }else{
+            console.log('Digite um cupom valido')
+            }
+        }else{
+            console.log('Ok! vc não possue cupom de desconto');
+            // Valor total do carrinho
+            total = carrinho.reduce((prox, atual) => prox + atual.preco, 0)
+            console.log('Valor total do carrinho de compras:',total,'Reais')
+        }
+    }else{
+        console.log('Digite um ID valido');
+    }
+const hoje = new Date()
+const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+const dataHoje = hoje.toLocaleDateString('pt-BR', options)
+console.log('Data da Compra: ', dataHoje)
