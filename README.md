@@ -1,3 +1,3 @@
 # carrinho-de-compras
-ainda tentando estudar para finalizar o projeto 
-meta: terminar até 14/06
+Parte basica do carrinho de compras concluida.
+falta o loop e escrever o readme.
